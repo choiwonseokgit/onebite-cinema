@@ -1,0 +1,21 @@
+.container {
+  max-width: 800px;
+  min-height: 100vh;
+  padding: 0 20px;
+  margin: 0 auto;
+}
+
+.header {
+  height: 60px;
+
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 60px;
+}
+
+.header > a {
+  color: rgb(229, 9, 20);
+  font-size: 20px;
+  font-weight: bold;
+  text-decoration: none;
+}
