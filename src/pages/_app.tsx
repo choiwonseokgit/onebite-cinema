@@ -1,5 +1,5 @@
 import type { AppProps } from "next/app";
-import GloabalLayout from "./components/global-layout";
+import GloabalLayout from "@/components/global-layout";
 import "@/styles/globals.css";
 import { NextPage } from "next";
 import { ReactNode } from "react";
