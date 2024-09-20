@@ -1,13 +1,30 @@
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import {
+  // GetServerSidePropsContext,
+  // InferGetServerSidePropsType,
+  GetStaticPropsContext,
+  InferGetStaticPropsType,
+} from "next";
 import S from "./[id].module.css";
 import fetchUniqueMovie from "@/lib/fetch-unique-movie";
+import { useRouter } from "next/router";
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
+export const getStaticPaths = () => {
+  return {
+    paths: [{ params: { id: "838209" } }, { params: { id: "1022789" } }],
+    fallback: true,
+  };
+};
+
+export const getStaticProps = async (context: GetStaticPropsContext) => {
   const id = context.params!.id;
 
   const uniqueMovie = await fetchUniqueMovie(Number(id));
+
+  if (!uniqueMovie) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
@@ -18,11 +35,13 @@ export const getServerSideProps = async (
 
 export default function Page({
   uniqueMovie,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>) {
+  const router = useRouter();
+
+  if (router.isFallback) return "로딩중입니다...";
   if (!uniqueMovie) return "...다시 시도해주세요";
 
   const {
-    id,
     title,
     subTitle,
     company,

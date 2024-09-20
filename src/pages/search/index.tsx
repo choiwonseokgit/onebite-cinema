@@ -1,27 +1,41 @@
 import SearchableLayout from "@/components/searchable-layout";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import MovieItem from "@/components/movie-item";
 import S from "./search.module.css";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+// import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import fetchMovies from "@/lib/fetch-movies";
+import type { MovieData } from "@/types";
+import { useRouter } from "next/router";
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const q = context.query.q;
+// export const getServerSideProps = async (
+//   context: GetServerSidePropsContext
+// ) => {
+//   const q = context.query.q;
 
-  const movies = await fetchMovies(q as string);
+//   const movies = await fetchMovies(q as string);
 
-  return {
-    props: {
-      movies,
-    },
+//   return {
+//     props: {
+//       movies,
+//     },
+//   };
+// };
+
+export default function Page() {
+  //기본적으로 SSG
+  const router = useRouter();
+  const q = router.query.q;
+  const [movies, setMovies] = useState<MovieData[]>([]);
+
+  const getMovies = async () => {
+    const newMovies = await fetchMovies(q as string);
+    setMovies(newMovies);
   };
-};
 
-export default function Page({
-  movies,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  useEffect(() => {
+    getMovies();
+  }, [q]);
+
   return (
     <div className={S.container}>
       {movies.map((movie) => (

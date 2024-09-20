@@ -4,13 +4,13 @@ import S from "./movie-item.module.css";
 
 export default function MovieItem({
   id,
-  title,
-  subTitle,
-  description,
-  releaseDate,
-  company,
-  genres,
-  runtime,
+  // title,
+  // subTitle,
+  // description,
+  // releaseDate,
+  // company,
+  // genres,
+  // runtime,
   posterImgUrl,
 }: MovieData) {
   return (

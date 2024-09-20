@@ -4,9 +4,9 @@ import MovieItem from "@/components/movie-item";
 import S from "./index.module.css";
 import fetchRandomMovies from "@/lib/fetch-random-movies";
 import fetchMovies from "@/lib/fetch-movies";
-import { InferGetServerSidePropsType } from "next";
+import { InferGetStaticPropsType } from "next";
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
   const [movies, recomMovies] = await Promise.all([
     fetchMovies(),
     fetchRandomMovies(),
@@ -23,14 +23,14 @@ export const getServerSideProps = async () => {
 export default function Home({
   movies,
   recomMovies,
-}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <div className={S.container}>
       <div>
         <h3>지금 가장 추천하는 영화</h3>
         <div className={S.recommend_movies_container}>
           {recomMovies.map((movie) => (
-            <MovieItem key={movie.id} {...movie} />
+            <MovieItem key={`recommend-movie-${movie.id}`} {...movie} />
           ))}
         </div>
       </div>
@@ -38,7 +38,7 @@ export default function Home({
         <h3>등록된 모든 영화</h3>
         <div className={S.all_movies_container}>
           {movies.map((movie) => (
-            <MovieItem key={movie.id} {...movie} />
+            <MovieItem key={`all-movie-${movie.id}`} {...movie} />
           ))}
         </div>
       </div>
