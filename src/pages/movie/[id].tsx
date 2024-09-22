@@ -7,6 +7,7 @@ import {
 import S from "./[id].module.css";
 import fetchUniqueMovie from "@/lib/fetch-unique-movie";
 import { useRouter } from "next/router";
+import Head from "next/head";
 
 export const getStaticPaths = () => {
   return {
@@ -38,7 +39,21 @@ export default function Page({
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const router = useRouter();
 
-  if (router.isFallback) return "로딩중입니다...";
+  if (router.isFallback)
+    return (
+      <>
+        <Head>
+          <title>한입 씨네마</title>
+          <meta property="og:image" content="/thumbnail.png" />
+          <meta property="og:title" content="한입 씨네마" />
+          <meta
+            property="og:description"
+            content="한입 씨네마에 등록된 영화를 만나보세요"
+          />
+        </Head>
+        <div>로딩중입니다..</div>
+      </>
+    );
   if (!uniqueMovie) return "...다시 시도해주세요";
 
   const {
@@ -53,28 +68,36 @@ export default function Page({
   } = uniqueMovie;
 
   return (
-    <div className={S.container}>
-      <div
-        className={S.cover_img_container}
-        style={{ backgroundImage: `url('${posterImgUrl}')` }}
-      >
-        <img src={posterImgUrl} />
-      </div>
+    <>
+      <Head>
+        <title>{title}</title>
+        <meta property="og:image" content={posterImgUrl} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+      </Head>
+      <div className={S.container}>
+        <div
+          className={S.cover_img_container}
+          style={{ backgroundImage: `url('${posterImgUrl}')` }}
+        >
+          <img src={posterImgUrl} />
+        </div>
 
-      <div className={S.info_container}>
-        <div>
-          <h2>{title}</h2>
+        <div className={S.info_container}>
           <div>
-            {releaseDate} / {genres.join(", ")} / {runtime}분
+            <h2>{title}</h2>
+            <div>
+              {releaseDate} / {genres.join(", ")} / {runtime}분
+            </div>
+            <div>{company}</div>
           </div>
-          <div>{company}</div>
-        </div>
 
-        <div>
-          <div className={S.subTitle}>{subTitle}</div>
-          <div className={S.description}>{description}</div>
+          <div>
+            <div className={S.subTitle}>{subTitle}</div>
+            <div className={S.description}>{description}</div>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
