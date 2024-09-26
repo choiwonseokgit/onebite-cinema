@@ -1,9 +1,13 @@
-export default function Page({
-  searchParams,
-}: {
-  searchParams: {
-    q?: string;
-  };
-}) {
-  return <div>검색 페이지 : {searchParams.q}</div>;
+import MovieItem from "@/components/movie-item";
+import movies from "@/dummy.json";
+import S from "./page.module.css";
+
+export default function Page() {
+  return (
+    <div className={S.container}>
+      {movies.map((movie) => (
+        <MovieItem key={movie.id} {...movie} />
+      ))}
+    </div>
+  );
 }

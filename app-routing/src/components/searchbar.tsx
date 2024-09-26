@@ -1,6 +1,7 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import S from "./searchbar.module.css";
 
 export default function Searchbar() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function Searchbar() {
   }, [q]);
 
   return (
-    <div>
+    <div className={S.container}>
       <input
         type="text"
         value={searchVal}
