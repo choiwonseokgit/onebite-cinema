@@ -1,7 +1,24 @@
 import S from "./page.module.css";
 import movies from "@/dummy.json";
 
-export default function Page() {
+export default async function Page({
+  params,
+}: {
+  params: { id: string | string[] };
+}) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/movie/${params.id}`,
+    {
+      next: { tags: [`${params.id}`] }, //on-demand형식으로 되게끔 특정 영화 id를 tags 값으로 설정
+    }
+  );
+
+  if (!response.ok) {
+    return <div>오류가 발생했습니다...</div>;
+  }
+
+  const movie = await response.json();
+
   const {
     id,
     title,
@@ -12,7 +29,7 @@ export default function Page() {
     posterImgUrl,
     releaseDate,
     genres,
-  } = movies[3];
+  } = movie;
 
   return (
     <div className={S.container}>
