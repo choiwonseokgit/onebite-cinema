@@ -1,5 +1,16 @@
+import { notFound } from "next/navigation";
 import S from "./page.module.css";
-import movies from "@/dummy.json";
+import type { MovieData } from "@/types";
+
+export const dynamicParams = false;
+
+export async function generateStaticParams() {
+  const response = await fetch(`http://localhost:12345/movie`);
+  if (!response.ok) throw new Error("Fetch failed: ~/movie");
+
+  const movies: MovieData[] = await response.json();
+  return movies.map((movie) => ({ id: movie.id.toString() }));
+}
 
 export default async function Page({
   params,
@@ -14,6 +25,7 @@ export default async function Page({
   );
 
   if (!response.ok) {
+    if (response.status === 404) notFound();
     return <div>오류가 발생했습니다...</div>;
   }
 

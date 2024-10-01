@@ -30,7 +30,9 @@ async function RecoMovies() {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_API_SERVER_URL}/movie/random`,
     {
-      cache: "no-store", //추천 영화는 random이기 전에 캐시 저장 x
+      next: {
+        revalidate: 3,
+      },
     }
   );
 
