@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import S from "./page.module.css";
-import type { MovieData } from "@/types";
+import type { MovieData, ReviewData } from "@/types";
+import ReviewEditor from "@/components/review-editor";
+import ReviewItem from "@/components/review-item";
 
 export const dynamicParams = false;
 
@@ -12,15 +14,11 @@ export async function generateStaticParams() {
   return movies.map((movie) => ({ id: movie.id.toString() }));
 }
 
-export default async function Page({
-  params,
-}: {
-  params: { id: string | string[] };
-}) {
+async function MovieDetail({ movieId }: { movieId: string }) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/movie/${params.id}`,
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/movie/${movieId}`,
     {
-      next: { tags: [`${params.id}`] }, //on-demand형식으로 되게끔 특정 영화 id를 tags 값으로 설정
+      next: { tags: [`${movieId}`] }, //on-demand형식으로 되게끔 특정 영화 id를 tags 값으로 설정
     }
   );
 
@@ -44,7 +42,7 @@ export default async function Page({
   } = movie;
 
   return (
-    <div className={S.container}>
+    <section>
       <div
         className={S.cover_img_container}
         style={{ backgroundImage: `url('${posterImgUrl}')` }}
@@ -64,6 +62,36 @@ export default async function Page({
           <div className={S.description}>{description}</div>
         </div>
       </div>
+    </section>
+  );
+}
+
+async function ReviewList({ movieId }: { movieId: string }) {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_SERVER_URL}/review/movie/${movieId}`
+  );
+
+  if (!response.ok) {
+    throw new Error(`Review fetch failed: ${response.status}`);
+  }
+
+  const reviews: ReviewData[] = await response.json();
+
+  return (
+    <section>
+      {reviews.map((review) => (
+        <ReviewItem key={`review-item-${review.id}`} {...review} />
+      ))}
+    </section>
+  );
+}
+
+export default async function Page({ params }: { params: { id: string } }) {
+  return (
+    <div className={S.container}>
+      <MovieDetail movieId={params.id} />
+      <ReviewEditor movieId={params.id} />
+      <ReviewList movieId={params.id} />
     </div>
   );
 }
