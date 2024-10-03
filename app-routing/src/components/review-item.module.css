@@ -35,6 +35,10 @@
   font-size: 14px;
 }
 
+.bottom_container div {
+  cursor: pointer;
+}
+
 .delete_btn {
   cursor: pointer;
   border-bottom: 1px solid gray;
